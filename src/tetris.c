@@ -1,16 +1,3 @@
-/* TODO
- * Rotate Pieces // DONE
- * Add other pieces //DONE
- * Put piece in place  // Done
- * collusion detection  ? Bug
- * complete lines
- * increase score
- * speed up game with lines completed
- * game over // Done
- * game over screen
- */
-
-
 #include <ncurses.h>
 #include <stdbool.h>
 #include <stdlib.h>
