@@ -1,5 +1,11 @@
-# Makefile
+#Makefile
+srcdir = ./src
+builddir = ./build
 CC = gcc
 LDLIBS=-lncurses
 
-all: tetris
+tetris: src/tetris.c
+	gcc src/tetris.c -lncurses -o ./build/tetris
+
+clean:
+	rm build/tetris
