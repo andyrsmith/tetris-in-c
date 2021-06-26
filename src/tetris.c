@@ -109,6 +109,8 @@ int main(void) {
 	int cRotation = 0;
 	int ch;
 	bool bForceDown = false;
+	int numLines = 0;
+	int hightestComLine = 0;
 
 	//no delay in getch() function
 	nodelay(stdscr,true);
@@ -131,6 +133,8 @@ int main(void) {
 			currentX -= 1;
 		} else if (ch == KEY_RIGHT && pieceFit(currentPiece, cRotation, currentX + 1, currentY)) {
 			currentX += 1;
+		} else if (ch == KEY_DOWN && pieceFit(currentPiece, cRotation, currentX, currentY + 1)) {
+			currentY += 1;
 		}
 
 		if(bForceDown) {
@@ -144,6 +148,28 @@ int main(void) {
 					for(int py = 0; py < 4; py++)
 						if(tetromino[currentPiece][rotate(px,py,cRotation)] != '.')
 								pField[(currentY+py) * nFieldWidth + (currentX + px)] = currentPiece + 1;
+
+				for(int py = 0; py < 4; py++) {
+
+					int pieceYPos = currentY + py;
+					//if y pos is less then field height
+					if(currentY + py < nFieldHeight - 1) {
+
+						bool completedLine = true;
+						for(int px = 1; px < nFieldWidth-1; px++)
+							completedLine = completedLine && (pField[(currentY+py) * nFieldWidth + px] !=0);
+
+						if(completedLine) {
+							hightestComLine = pieceYPos > hightestComLine ? pieceYPos : hightestComLine;	
+							numLines++;
+							for(int px = 1; px < nFieldWidth-1; px++)
+								//first just set to 0 and pull down other lines
+								//then try setting to 8 to animate the then pull down lines
+								pField[(currentY+py) * nFieldWidth +px] = 0;
+						}
+					}
+
+				}
 
 				currentY = 0;
 				currentX = nFieldWidth / 2;
@@ -172,9 +198,20 @@ int main(void) {
 		//refresh to display contents on screen
 		refresh();
 
-		if(currentY > 15) {
-			gameOver = true;
+		if(numLines > 0) {
+			//Animate the completedLines
+			//push down the other lines above it
+			for(int y = hightestComLine; y > 0; y--){
+				for(int x = 1; x < nFieldWidth-1; x++) {
+					if(y - numLines < nFieldHeight-1 ) {
+						pField[y*nFieldWidth+x] = pField[(y-numLines)*nFieldWidth+x];
+					}
+				}
+			}
 		}
+
+		hightestComLine = 0;	
+		numLines = 0;
 	}
 
 	getch();
