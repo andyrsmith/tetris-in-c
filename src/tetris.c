@@ -69,15 +69,24 @@ int rotate(int px, int py, int r) {
 
 }
 
+void drawScoreAndLevel(int score, int level) {
+	//Draw the score and level
+	move(1, nFieldWidth + 5);
+	printw("Level: %d\n", level);
+	move(3, nFieldWidth + 5);
+	printw("Score: %d\n", score);
+	refresh();
+}
+
 int main(void) {
 	bool gameOver = false;
-
+	int score = 0;
+	int level = 1;
 	initscr();
 	//No Cursor
 	curs_set(0);
 
-	refresh();
-
+	drawScoreAndLevel(score,level);
 	//Symbols used for the game
 	char symbols[] = {
 		' ', 'A', 'B', 'C', 'D', 'E', 'F', 'G', '=', '#' };
@@ -93,11 +102,6 @@ int main(void) {
 				pField[(y*nFieldWidth)+x] = 0;
 			}
 
-	//Draw the score and level
-	move(1, nFieldWidth + 5);
-	addstr("Level: ");
-	move(3, nFieldWidth + 5);
-	addstr("Score: ");
 	refresh();
 
 	//initialize vars
@@ -110,6 +114,7 @@ int main(void) {
 	int ch;
 	bool bForceDown = false;
 	int numLines = 0;
+	int totalCompletedLines = 0;
 	int hightestComLine = 0;
 
 	//no delay in getch() function
@@ -162,6 +167,7 @@ int main(void) {
 						if(completedLine) {
 							hightestComLine = pieceYPos > hightestComLine ? pieceYPos : hightestComLine;	
 							numLines++;
+							totalCompletedLines++;
 							for(int px = 1; px < nFieldWidth-1; px++)
 								//first just set to 0 and pull down other lines
 								//then try setting to 8 to animate the then pull down lines
@@ -208,10 +214,20 @@ int main(void) {
 					}
 				}
 			}
+			score += numLines * 40;
+			//Just so we know to update the speed
+			//if we move to the next level then speed increases
+			int updateLevel = totalCompletedLines / 10 + 1;
+			if(updateLevel != level) {
+				level = updateLevel;
+				nSpeed--;
+			}
+			drawScoreAndLevel(score, level);
+			refresh();
+			hightestComLine = 0;	
+			numLines = 0;
 		}
-
-		hightestComLine = 0;	
-		numLines = 0;
+		
 	}
 
 	getch();
