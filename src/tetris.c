@@ -78,7 +78,17 @@ void drawScoreAndLevel(int score, int level) {
 	refresh();
 }
 
+void showGameOverScreen(int score) {
+	clear();
+	refresh();
+	mvaddstr(8, 8,"Game Over");
+	move(10, 8);
+	printw("Score: %d\n", score);
+	refresh();
+}
+
 int main(void) {
+
 	bool gameOver = false;
 	int score = 0;
 	int level = 1;
@@ -86,6 +96,8 @@ int main(void) {
 	//No Cursor
 	curs_set(0);
 
+	addstr("Start");
+	refresh();
 	drawScoreAndLevel(score,level);
 	//Symbols used for the game
 	char symbols[] = {
@@ -204,6 +216,7 @@ int main(void) {
 		//refresh to display contents on screen
 		refresh();
 
+		//if completedLine
 		if(numLines > 0) {
 			//Animate the completedLines
 			//push down the other lines above it
@@ -223,14 +236,15 @@ int main(void) {
 				nSpeed--;
 			}
 			drawScoreAndLevel(score, level);
-			refresh();
 			hightestComLine = 0;	
 			numLines = 0;
 		}
 		
 	}
+	nodelay(stdscr,false);
 
-	getch();
+	showGameOverScreen(score);
+	getch();	
 	endwin();
 	return 0;
 }

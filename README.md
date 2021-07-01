@@ -29,9 +29,9 @@ arrow keys: move tetromi
 
 ## Todo
 
-- Bug in collision detection
-- complete lines
-- increase score
-- increase speed
-- speed up game with progress to next level
 - game over screen
+- improve scoring: switch scoring to the original nintendo scoring. 
+- current scoring is 40 * completedLines
+
+## Acknowledgements
+
